@@ -1,194 +1,358 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ProofPulse - Add Testimonial</title>
+  <title>ProofPulse - Admin Dashboard</title>
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; }
+    body { background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 16px; }
     
-    .card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px; width: 100%; max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); }
-    .brand { color: #3b82f6; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
-    h2 { margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+    .dashboard-container { width: 100%; max-width: 650px; margin-top: 10px; }
     
-    .form-group { margin-bottom: 18px; }
-    label { display: block; font-size: 12px; color: #a1a1aa; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; transition: all 0.2s; }
-    input[type="text"]:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    /* Header e Navegacao por Abas */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .brand { color: #3b82f6; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+    h2 { margin: 4px 0 0 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+
+    .nav-tabs { display: flex; gap: 8px; background: #141417; padding: 6px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 20px; }
+    .tab-btn { flex: 1; background: transparent; color: #a1a1aa; border: none; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background: #2563eb; color: #ffffff; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Cards de Depoimento no Painel */
+    .card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 20px; width: 100%; margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
     
-    /* Area de Upload Customizada */
-    .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; transition: all 0.2s; }
-    .file-dropzone:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.03); }
+    .item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; }
+    .user-details h4 { margin: 0; font-size: 15px; color: #fff; }
+    .user-details p { margin: 2px 0 0 0; font-size: 12px; color: #a1a1aa; }
+
+    .badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge.pending { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+    .badge.approved { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+    .rating { color: #fbbf24; font-size: 14px; margin-bottom: 8px; }
+    .text { font-size: 14px; color: #e4e4e7; line-height: 1.5; margin: 0 0 14px 0; }
+
+    /* Midias */
+    .media-preview-list { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; }
+    .media-thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 1px solid #3f3f46; background: #000; flex-shrink: 0; }
+
+    /* Botoes de Acao */
+    .actions { display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 14px; }
+    .btn-action { flex: 1; border: none; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-approve { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .btn-approve:hover { background: #22c55e; color: #fff; }
+    .btn-unapprove { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .btn-unapprove:hover { background: #eab308; color: #000; }
+    .btn-delete { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); flex: 0 0 44px; }
+    .btn-delete:hover { background: #ef4444; color: #fff; }
+
+    /* Estilos do Formulario */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 12px; color: #a1a1aa; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+    input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; }
+    
+    .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; }
     .file-dropzone input { display: none; }
     .file-dropzone-text { font-size: 13px; color: #a1a1aa; }
     .file-dropzone-text span { color: #3b82f6; font-weight: 600; }
-
-    /* Grid de Miniaturas com Botao X Individual */
-    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 12px; }
-    .media-item { position: relative; width: 100%; height: 85px; border-radius: 10px; overflow: hidden; border: 1px solid #3f3f46; background: #000; }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; margin-top: 10px; }
+    .media-item { position: relative; width: 100%; height: 75px; border-radius: 8px; overflow: hidden; border: 1px solid #3f3f46; }
     .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
-    .media-item .video-tag { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 9px; padding: 2px 4px; border-radius: 4px; }
-    
-    /* Botao X de remoção individual */
-    .btn-remove-item { position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.85); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; backdrop-filter: blur(4px); transition: transform 0.15s ease; z-index: 10; }
-    .btn-remove-item:active { transform: scale(0.85); }
+    .btn-remove-item { position: absolute; top: 2px; right: 2px; background: rgba(239, 68, 68, 0.85); color: #fff; border: none; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; cursor: pointer; }
 
-    /* Estrelas Gigantes Mobile Friendly */
-    .star-rating { display: flex; gap: 10px; font-size: 32px; cursor: pointer; user-select: none; margin-top: 4px; }
-    .star { color: #27272a; transition: color 0.15s ease, transform 0.15s ease; }
-    .star.active { color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
-    .star:active { transform: scale(1.2); }
+    .star-rating { display: flex; gap: 8px; font-size: 28px; cursor: pointer; }
+    .star { color: #27272a; }
+    .star.active { color: #fbbf24; }
 
-    /* Botao Principal */
-    button[type="submit"] { width: 100%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39); transition: all 0.2s; margin-top: 10px; }
-    button[type="submit"]:active { transform: scale(0.98); opacity: 0.9; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button[type="submit"] { width: 100%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
-    .toast { display: none; padding: 14px; border-radius: 12px; font-size: 14px; margin-bottom: 20px; text-align: center; font-weight: 600; }
-    .toast.success { display: block; background: rgba(34, 197, 94, 0.12); border: 1px solid #22c55e; color: #4ade80; }
-    .toast.error { display: block; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; color: #f87171; }
+    .empty-state { text-align: center; padding: 40px 20px; color: #a1a1aa; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="brand">ProofPulse Studio</div>
-    <h2>+ Add Testimonial</h2>
-    
-    <div id="toast" class="toast"></div>
-
-    <form id="add-form">
-      <div class="form-group">
-        <label>Customer Name *</label>
-        <input type="text" id="name" placeholder="Sarah Jenkins" required>
+  <div class="dashboard-container">
+    <div class="header">
+      <div>
+        <div class="brand">ProofPulse Dashboard</div>
+        <h2>Gestão de Depoimentos</h2>
       </div>
-      
-      <div class="form-group">
-        <label>Business Name / Role</label>
-        <input type="text" id="business" placeholder="TechFlow Inc">
-      </div>
+    </div>
 
-      <!-- Upload de Varias Fotos e Videos -->
-      <div class="form-group">
-        <label>Customer Photos / Videos (Multiple)</label>
-        
-        <div class="file-dropzone" onclick="document.getElementById('media-files').click()">
-          <div class="file-dropzone-text">
-            📷 🎥 <span>Tap to add photos or videos</span>
+    <!-- Abas de Navegação -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('moderation')">📥 Moderação (<span id="pending-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('approved')">✅ Aprovados (<span id="approved-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('create')">➕ Criar Novo</button>
+    </div>
+
+    <!-- ABA 1: MODERAÇÃO (PENDENTES) -->
+    <div id="tab-moderation" class="tab-content active">
+      <div id="list-pending"></div>
+    </div>
+
+    <!-- ABA 2: APROVADOS -->
+    <div id="tab-approved" class="tab-content">
+      <div id="list-approved"></div>
+    </div>
+
+    <!-- ABA 3: CRIAR MANUAMENTE -->
+    <div id="tab-create" class="tab-content">
+      <div class="card">
+        <form id="add-form">
+          <div class="form-group">
+            <label>Nome do Cliente *</label>
+            <input type="text" id="name" placeholder="Ex: Rodrigo Santos" required>
           </div>
-          <input type="file" id="media-files" accept="image/*,video/*" multiple>
-        </div>
-
-        <!-- Grid de Miniaturas -->
-        <div class="media-grid" id="media-grid"></div>
+          <div class="form-group">
+            <label>Empresa / Cidade</label>
+            <input type="text" id="business" placeholder="Ex: CEO da TechCorp">
+          </div>
+          <div class="form-group">
+            <label>Fotos / Vídeos</label>
+            <div class="file-dropzone" onclick="document.getElementById('media-files').click()">
+              <div class="file-dropzone-text">📷 🎥 <span>Adicionar fotos ou vídeos</span></div>
+              <input type="file" id="media-files" accept="image/*,video/*" multiple>
+            </div>
+            <div class="media-grid" id="media-grid"></div>
+          </div>
+          <div class="form-group">
+            <label>Avaliação</label>
+            <div class="star-rating" id="star-container">
+              <span class="star active" data-value="1">★</span>
+              <span class="star active" data-value="2">★</span>
+              <span class="star active" data-value="3">★</span>
+              <span class="star active" data-value="4">★</span>
+              <span class="star active" data-value="5">★</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Depoimento *</label>
+            <textarea id="text" rows="3" required></textarea>
+          </div>
+          <button type="submit" id="submit-btn">Publicar Depoimento</button>
+        </form>
       </div>
-
-      <div class="form-group">
-        <label>Star Rating</label>
-        <div class="star-rating" id="star-container">
-          <span class="star active" data-value="1">★</span>
-          <span class="star active" data-value="2">★</span>
-          <span class="star active" data-value="3">★</span>
-          <span class="star active" data-value="4">★</span>
-          <span class="star active" data-value="5">★</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Testimonial Text *</label>
-        <textarea id="text" rows="3" placeholder="What did they say about your product?" required></textarea>
-      </div>
-
-      <button type="submit" id="submit-btn">Publish Testimonial</button>
-    </form>
+    </div>
   </div>
 
   <script>
     const SUPABASE_URL = "https://udctjyetnervitwkjhib.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_DJMt-u-HyH0NG2AOAsriaQ_4PZpr9YC";
+    
+    let allTestimonials = [];
     let currentRating = 5;
-    let selectedFiles = []; // Array que guarda todos os arquivos selecionados
+    let selectedFiles = [];
 
+    // Troca de Abas
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      if (tabName === 'moderation') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('tab-moderation').classList.add('active');
+      } else if (tabName === 'approved') {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('tab-approved').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('tab-create').classList.add('active');
+      }
+    }
+
+    // Carregar Depoimentos do Supabase
+    async function loadTestimonials() {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?select=*&order=created_at.desc`, {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        allTestimonials = await res.json();
+        renderLists();
+      } catch (err) {
+        console.error("Erro ao carregar:", err);
+      }
+    }
+
+    // Renderizar Listas (Pendentes e Aprovados)
+    function renderLists() {
+      const pendingList = document.getElementById('list-pending');
+      const approvedList = document.getElementById('list-approved');
+
+      const pendingItems = allTestimonials.filter(t => t.status === 'pending');
+      const approvedItems = allTestimonials.filter(t => t.status === 'approved');
+
+      document.getElementById('pending-count').innerText = pendingItems.length;
+      document.getElementById('approved-count').innerText = approvedItems.length;
+
+      // Renderiza Pendentes
+      if (pendingItems.length === 0) {
+        pendingList.innerHTML = `<div class="empty-state">🎉 Nenhuma avaliação pendente para moderar no momento!</div>`;
+      } else {
+        pendingList.innerHTML = pendingItems.map(t => createCardHTML(t)).join('');
+      }
+
+      // Renderiza Aprovados
+      if (approvedItems.length === 0) {
+        approvedList.innerHTML = `<div class="empty-state">Nenhum depoimento aprovado ainda.</div>`;
+      } else {
+        approvedList.innerHTML = approvedItems.map(t => createCardHTML(t)).join('');
+      }
+    }
+
+    // Gera o HTML de cada Card de Depoimento
+    function createCardHTML(t) {
+      const stars = "★".repeat(t.rating || 5) + "☆".repeat(5 - (t.rating || 5));
+      const items = t.media_items || [];
+      if (items.length === 0 && t.media_url) items.push({ url: t.media_url, type: t.media_type });
+
+      let mediaHTML = '';
+      if (items.length > 0) {
+        mediaHTML = `<div class="media-preview-list">` + items.map(m => {
+          if (m.type === 'video') return `<video class="media-thumb" src="${m.url}"></video>`;
+          return `<img class="media-thumb" src="${m.url}" />`;
+        }).join('') + `</div>`;
+      }
+
+      const isApproved = t.status === 'approved';
+
+      return `
+        <div class="card">
+          <div class="item-header">
+            <div class="user-info">
+              <img class="avatar" src="${t.avatar_url || 'https://via.placeholder.com/150'}">
+              <div class="user-details">
+                <h4>${t.customer_name}</h4>
+                <p>${t.business_name || 'Cliente'}</p>
+              </div>
+            </div>
+            <span class="badge ${t.status}">${t.status === 'approved' ? 'Ao Vivo' : 'Pendente'}</span>
+          </div>
+
+          <div class="rating">${stars}</div>
+          <p class="text">"${t.testimonial_text}"</p>
+          ${mediaHTML}
+
+          <div class="actions">
+            ${isApproved 
+              ? `<button class="btn-action btn-unapprove" onclick="updateStatus('${t.id}', 'pending')">🟡 Ocultar</button>`
+              : `<button class="btn-action btn-approve" onclick="updateStatus('${t.id}', 'approved')">🟢 Aprovar Agora</button>`
+            }
+            <button class="btn-action btn-delete" onclick="deleteTestimonial('${t.id}')">🗑️</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Alterar Status (Aprovar/Ocultar)
+    async function updateStatus(id, newStatus) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        if (res.ok) {
+          // Atualiza localmente sem precisar recarregar a página
+          const item = allTestimonials.find(t => t.id === id);
+          if (item) item.status = newStatus;
+          renderLists();
+        }
+      } catch (err) {
+        alert("Erro ao atualizar status.");
+      }
+    }
+
+    // Excluir Depoimento
+    async function deleteTestimonial(id) {
+      if (!confirm("Tem certeza que deseja apagar este depoimento?")) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?id=eq.${id}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          allTestimonials = allTestimonials.filter(t => t.id !== id);
+          renderLists();
+        }
+      } catch (err) {
+        alert("Erro ao deletar.");
+      }
+    }
+
+    // Formulario de Criacao Manual
     const fileInput = document.getElementById('media-files');
     const mediaGrid = document.getElementById('media-grid');
 
-    // Ao escolher arquivos no input
     fileInput.addEventListener('change', (e) => {
       const files = Array.from(e.target.files);
       files.forEach(f => selectedFiles.push(f));
       renderPreviews();
-      fileInput.value = ''; // Limpa o input para poder adicionar mais depois se quiser
+      fileInput.value = '';
     });
 
-    // Renderiza a Galeria de Miniaturas com o Botão X individual
     function renderPreviews() {
       mediaGrid.innerHTML = '';
       selectedFiles.forEach((file, index) => {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'media-item';
-
         const btnRemove = document.createElement('button');
         btnRemove.className = 'btn-remove-item';
         btnRemove.innerText = '✕';
-        btnRemove.onclick = (e) => {
-          e.stopPropagation();
-          removeFile(index);
-        };
-
+        btnRemove.onclick = (e) => { e.stopPropagation(); selectedFiles.splice(index, 1); renderPreviews(); };
         const objectUrl = URL.createObjectURL(file);
-
         if (file.type.startsWith('video/')) {
           const video = document.createElement('video');
           video.src = objectUrl;
-          video.muted = true;
           itemDiv.appendChild(video);
-
-          const tag = document.createElement('span');
-          tag.className = 'video-tag';
-          tag.innerText = '🎥 VIDEO';
-          itemDiv.appendChild(tag);
         } else {
           const img = document.createElement('img');
           img.src = objectUrl;
           itemDiv.appendChild(img);
         }
-
         itemDiv.appendChild(btnRemove);
         mediaGrid.appendChild(itemDiv);
       });
     }
 
-    // Função para remover um arquivo específico pelo índice
-    function removeFile(index) {
-      selectedFiles.splice(index, 1);
-      renderPreviews();
-    }
-
-    // Lógica das Estrelas
+    // Stars
     const stars = document.querySelectorAll('.star');
     stars.forEach(star => {
       star.addEventListener('click', (e) => {
         currentRating = parseInt(e.target.getAttribute('data-value'));
-        updateStars();
+        stars.forEach(s => {
+          const val = parseInt(s.getAttribute('data-value'));
+          if (val <= currentRating) s.classList.add('active');
+          else s.classList.remove('active');
+        });
       });
     });
 
-    function updateStars() {
-      stars.forEach(star => {
-        const val = parseInt(star.getAttribute('data-value'));
-        if (val <= currentRating) star.classList.add('active');
-        else star.classList.remove('active');
-      });
-    }
-
-    // Upload de múltiplos arquivos para o Supabase Storage
+    // Upload Supabase Storage
     async function uploadAllMedia(files) {
       if (files.length === 0) return [];
-      
-      const uploadPromises = files.map(async (file) => {
+      const promises = files.map(async (file) => {
         const isVideo = file.type.startsWith('video/');
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 5)}.${fileExt}`;
+        const fileName = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 5)}.${fileExt}`;
 
         const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${fileName}`, {
           method: 'POST',
@@ -199,41 +363,30 @@
           },
           body: file
         });
-
         if (res.ok) {
-          return {
-            url: `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`,
-            type: isVideo ? 'video' : 'image'
-          };
+          return { url: `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`, type: isVideo ? 'video' : 'image' };
         }
         return null;
       });
-
-      const results = await Promise.all(uploadPromises);
-      return results.filter(r => r !== null);
+      const res = await Promise.all(promises);
+      return res.filter(r => r !== null);
     }
 
-    // Submit
     document.getElementById('add-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
-      const toast = document.getElementById('toast');
-      
       btn.disabled = true;
-      btn.innerText = `Uploading ${selectedFiles.length} File(s)...`;
-      toast.className = "toast";
+      btn.innerText = "Publicando...";
 
       try {
-        const uploadedMediaItems = await uploadAllMedia(selectedFiles);
-
-        // Foto principal (avatar) pega a 1ª foto se existir
-        const mainAvatar = uploadedMediaItems.find(m => m.type === 'image')?.url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+        const uploadedMedia = await uploadAllMedia(selectedFiles);
+        const mainAvatar = uploadedMedia.find(m => m.type === 'image')?.url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
 
         const data = {
           customer_name: document.getElementById('name').value,
           business_name: document.getElementById('business').value,
           avatar_url: mainAvatar,
-          media_items: uploadedMediaItems,
+          media_items: uploadedMedia,
           rating: currentRating,
           testimonial_text: document.getElementById('text').value,
           status: 'approved'
@@ -251,25 +404,23 @@
         });
 
         if (res.ok) {
-          toast.innerText = `✨ Published successfully with ${uploadedMediaItems.length} media file(s)!`;
-          toast.classList.add('success');
+          alert("✨ Depoimento criado com sucesso!");
           e.target.reset();
           selectedFiles = [];
           renderPreviews();
-          currentRating = 5;
-          updateStars();
-        } else {
-          toast.innerText = "❌ Error saving to database.";
-          toast.classList.add('error');
+          loadTestimonials();
+          switchTab('approved');
         }
       } catch (err) {
-        toast.innerText = "❌ Connection error.";
-        toast.classList.add('error');
+        alert("Erro ao salvar.");
       } finally {
         btn.disabled = false;
-        btn.innerText = "Publish Testimonial";
+        btn.innerText = "Publicar Depoimento";
       }
     });
+
+    // Iniciar
+    loadTestimonials();
   </script>
 </body>
 </html>
