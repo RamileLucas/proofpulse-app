@@ -2,54 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProofPulse - Add Testimonial</title>
   <style>
-    body { background: #09090b; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-    .card { background: #18181b; border: 1px solid #27272a; padding: 24px; border-radius: 12px; width: 360px; }
-    h2 { margin-top: 0; font-size: 20px; }
-    label { font-size: 12px; color: #a1a1aa; display: block; margin-top: 12px; }
-    input, textarea { width: 100%; background: #27272a; border: 1px solid #3f3f46; color: #fff; padding: 10px; border-radius: 6px; margin-top: 4px; box-sizing: border-box; }
-    button { width: 100%; background: #2563eb; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 16px; cursor: pointer; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .card { background: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
+    .brand { color: #3b82f6; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+    h2 { margin: 0 0 24px 0; font-size: 22px; font-weight: 600; color: #ffffff; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-size: 13px; color: #a1a1aa; margin-bottom: 6px; font-weight: 500; }
+    input, textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 12px 14px; border-radius: 8px; font-size: 14px; transition: all 0.2s ease; }
+    input:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    
+    /* Star Rating Interativo */
+    .star-rating { display: flex; gap: 8px; font-size: 28px; cursor: pointer; user-select: none; margin-top: 4px; }
+    .star { color: #3f3f46; transition: color 0.15s ease, transform 0.15s ease; }
+    .star.active { color: #fbbf24; }
+    .star:hover { transform: scale(1.15); }
+
+    button { width: 100%; background: #2563eb; color: #ffffff; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
     button:hover { background: #1d4ed8; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Mensagem de Toast */
+    .toast { display: none; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; text-align: center; font-weight: 500; }
+    .toast.success { display: block; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #4ade80; }
+    .toast.error { display: block; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; }
   </style>
 </head>
 <body>
   <div class="card">
+    <div class="brand">ProofPulse Dashboard</div>
     <h2>+ Add Testimonial</h2>
+    
+    <div id="toast" class="toast"></div>
+
     <form id="add-form">
-      <label>Customer Name</label>
-      <input type="text" id="name" placeholder="John Doe" required>
+      <div class="form-group">
+        <label>Customer Name *</label>
+        <input type="text" id="name" placeholder="e.g. Sarah Jenkins" required>
+      </div>
       
-      <label>Business Name / Role</label>
-      <input type="text" id="business" placeholder="E-commerce Owner">
-      
-      <label>Avatar Image URL</label>
-      <input type="url" id="avatar" placeholder="https://images.unsplash.com/...">
-      
-      <label>Star Rating (1 to 5)</label>
-      <input type="number" id="rating" min="1" max="5" value="5">
-      
-      <label>Testimonial Text</label>
-      <textarea id="text" rows="3" placeholder="Great service!" required></textarea>
-      
-      <button type="submit">Save Testimonial</button>
+      <div class="form-group">
+        <label>Business / Company Name</label>
+        <input type="text" id="business" placeholder="e.g. TechFlow Inc">
+      </div>
+
+      <div class="form-group">
+        <label>Avatar Photo URL (Optional)</label>
+        <input type="url" id="avatar" placeholder="https://images.unsplash.com/...">
+      </div>
+
+      <div class="form-group">
+        <label>Star Rating</label>
+        <div class="star-rating" id="star-container">
+          <span class="star active" data-value="1">★</span>
+          <span class="star active" data-value="2">★</span>
+          <span class="star active" data-value="3">★</span>
+          <span class="star active" data-value="4">★</span>
+          <span class="star active" data-value="5">★</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Testimonial Text *</label>
+        <textarea id="text" rows="3" placeholder="What did they say about your product?" required></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">Save Testimonial</button>
     </form>
   </div>
 
   <script>
     const SUPABASE_URL = "https://udctjyetnervitwkjhib.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_DJMt-u-HyH0NG2AOAsriaQ_4PZpr9YC";
+    let currentRating = 5;
 
+    // Lógica das Estrelas Interativas
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+      star.addEventListener('click', (e) => {
+        currentRating = parseInt(e.target.getAttribute('data-value'));
+        updateStars();
+      });
+    });
+
+    function updateStars() {
+      stars.forEach(star => {
+        const val = parseInt(star.getAttribute('data-value'));
+        if (val <= currentRating) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    }
+
+    // Envio do Formulário
     document.getElementById('add-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = e.target.querySelector('button');
+      const btn = document.getElementById('submit-btn');
+      const toast = document.getElementById('toast');
+      
+      btn.disabled = true;
       btn.innerText = "Saving...";
+      toast.className = "toast";
 
       const data = {
         customer_name: document.getElementById('name').value,
         business_name: document.getElementById('business').value,
         avatar_url: document.getElementById('avatar').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-        rating: parseInt(document.getElementById('rating').value),
+        rating: currentRating,
         testimonial_text: document.getElementById('text').value,
         status: 'approved'
       };
@@ -67,14 +131,20 @@
         });
 
         if (res.ok) {
-          alert('Testimonial added successfully!');
+          toast.innerText = "✨ Testimonial added successfully!";
+          toast.classList.add('success');
           e.target.reset();
+          currentRating = 5;
+          updateStars();
         } else {
-          alert('Error adding testimonial.');
+          toast.innerText = "❌ Error adding testimonial. Check Supabase permissions.";
+          toast.classList.add('error');
         }
       } catch (err) {
-        alert('Connection error.');
+        toast.innerText = "❌ Connection error.";
+        toast.classList.add('error');
       } finally {
+        btn.disabled = false;
         btn.innerText = "Save Testimonial";
       }
     });
