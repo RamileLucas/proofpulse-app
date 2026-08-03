@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,7 +10,7 @@
     
     .dashboard-container { width: 100%; max-width: 650px; margin-top: 10px; }
     
-    /* Header e Navegacao por Abas */
+    /* Header and Navigation Tabs */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .brand { color: #3b82f6; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
     h2 { margin: 4px 0 0 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
@@ -22,7 +22,7 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Cards de Depoimento no Painel */
+    /* Review Cards */
     .card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 20px; width: 100%; margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
     
     .item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -38,11 +38,11 @@
     .rating { color: #fbbf24; font-size: 14px; margin-bottom: 8px; }
     .text { font-size: 14px; color: #e4e4e7; line-height: 1.5; margin: 0 0 14px 0; }
 
-    /* Midias */
+    /* Media List */
     .media-preview-list { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; }
     .media-thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 1px solid #3f3f46; background: #000; flex-shrink: 0; }
 
-    /* Botoes de Acao */
+    /* Action Buttons */
     .actions { display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 14px; }
     .btn-action { flex: 1; border: none; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-approve { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
@@ -52,7 +52,7 @@
     .btn-delete { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); flex: 0 0 44px; }
     .btn-delete:hover { background: #ef4444; color: #fff; }
 
-    /* Estilos do Formulario */
+    /* Form Styles */
     .form-group { margin-bottom: 16px; }
     label { display: block; font-size: 12px; color: #a1a1aa; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
     input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; }
@@ -80,49 +80,49 @@
     <div class="header">
       <div>
         <div class="brand">ProofPulse Dashboard</div>
-        <h2>Gestão de Depoimentos</h2>
+        <h2>Review Management</h2>
       </div>
     </div>
 
-    <!-- Abas de Navegação -->
+    <!-- Navigation Tabs -->
     <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('moderation')">📥 Moderação (<span id="pending-count">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('approved')">✅ Aprovados (<span id="approved-count">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('create')">➕ Criar Novo</button>
+      <button class="tab-btn active" onclick="switchTab('moderation')">📥 Moderation (<span id="pending-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('approved')">✅ Approved (<span id="approved-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('create')">➕ Add New</button>
     </div>
 
-    <!-- ABA 1: MODERAÇÃO (PENDENTES) -->
+    <!-- TAB 1: MODERATION (PENDING) -->
     <div id="tab-moderation" class="tab-content active">
       <div id="list-pending"></div>
     </div>
 
-    <!-- ABA 2: APROVADOS -->
+    <!-- TAB 2: APPROVED -->
     <div id="tab-approved" class="tab-content">
       <div id="list-approved"></div>
     </div>
 
-    <!-- ABA 3: CRIAR MANUAMENTE -->
+    <!-- TAB 3: CREATE MANUALLY -->
     <div id="tab-create" class="tab-content">
       <div class="card">
         <form id="add-form">
           <div class="form-group">
-            <label>Nome do Cliente *</label>
-            <input type="text" id="name" placeholder="Ex: Rodrigo Santos" required>
+            <label>Customer Name *</label>
+            <input type="text" id="name" placeholder="e.g. Robert Miller" required>
           </div>
           <div class="form-group">
-            <label>Empresa / Cidade</label>
-            <input type="text" id="business" placeholder="Ex: CEO da TechCorp">
+            <label>Company / Location</label>
+            <input type="text" id="business" placeholder="e.g. Founder at Acme Co.">
           </div>
           <div class="form-group">
-            <label>Fotos / Vídeos do Produto</label>
+            <label>Product Photos / Videos</label>
             <div class="file-dropzone" onclick="document.getElementById('media-files').click()">
-              <div class="file-dropzone-text">📷 🎥 <span>Adicionar fotos ou vídeos</span></div>
+              <div class="file-dropzone-text">📷 🎥 <span>Click to attach photos or videos</span></div>
               <input type="file" id="media-files" accept="image/*,video/*" multiple>
             </div>
             <div class="media-grid" id="media-grid"></div>
           </div>
           <div class="form-group">
-            <label>Avaliação</label>
+            <label>Rating</label>
             <div class="star-rating" id="star-container">
               <span class="star active" data-value="1">★</span>
               <span class="star active" data-value="2">★</span>
@@ -132,10 +132,10 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Depoimento *</label>
-            <textarea id="text" rows="3" required></textarea>
+            <label>Review Content *</label>
+            <textarea id="text" rows="3" placeholder="Write or paste the review here..." required></textarea>
           </div>
-          <button type="submit" id="submit-btn">Publicar Depoimento</button>
+          <button type="submit" id="submit-btn">Publish Review</button>
         </form>
       </div>
     </div>
@@ -149,7 +149,7 @@
     let currentRating = 5;
     let selectedFiles = [];
 
-    // Troca de Abas
+    // Switch active tab
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -166,7 +166,7 @@
       }
     }
 
-    // Carregar Depoimentos do Supabase
+    // Load testimonials from Supabase
     async function loadTestimonials() {
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?select=*&order=created_at.desc`, {
@@ -178,11 +178,11 @@
         allTestimonials = await res.json();
         renderLists();
       } catch (err) {
-        console.error("Erro ao carregar:", err);
+        console.error("Error loading testimonials:", err);
       }
     }
 
-    // Renderizar Listas (Pendentes e Aprovados)
+    // Render pending and approved lists
     function renderLists() {
       const pendingList = document.getElementById('list-pending');
       const approvedList = document.getElementById('list-approved');
@@ -193,22 +193,22 @@
       document.getElementById('pending-count').innerText = pendingItems.length;
       document.getElementById('approved-count').innerText = approvedItems.length;
 
-      // Renderiza Pendentes
+      // Render Pending
       if (pendingItems.length === 0) {
-        pendingList.innerHTML = `<div class="empty-state">🎉 Nenhuma avaliação pendente para moderar no momento!</div>`;
+        pendingList.innerHTML = `<div class="empty-state">🎉 No pending reviews to moderate right now!</div>`;
       } else {
         pendingList.innerHTML = pendingItems.map(t => createCardHTML(t)).join('');
       }
 
-      // Renderiza Aprovados
+      // Render Approved
       if (approvedItems.length === 0) {
-        approvedList.innerHTML = `<div class="empty-state">Nenhum depoimento aprovado ainda.</div>`;
+        approvedList.innerHTML = `<div class="empty-state">No approved reviews yet.</div>`;
       } else {
         approvedList.innerHTML = approvedItems.map(t => createCardHTML(t)).join('');
       }
     }
 
-    // Gera o HTML de cada Card de Depoimento
+    // Generate HTML for each review card
     function createCardHTML(t) {
       const stars = "★".repeat(t.rating || 5) + "☆".repeat(5 - (t.rating || 5));
       const items = t.media_items || [];
@@ -231,10 +231,10 @@
               <img class="avatar" src="${t.avatar_url || 'https://via.placeholder.com/150'}">
               <div class="user-details">
                 <h4>${t.customer_name}</h4>
-                <p>${t.business_name || 'Cliente'}</p>
+                <p>${t.business_name || 'Customer'}</p>
               </div>
             </div>
-            <span class="badge ${t.status}">${t.status === 'approved' ? 'Ao Vivo' : 'Pendente'}</span>
+            <span class="badge ${t.status}">${t.status === 'approved' ? 'Live' : 'Pending'}</span>
           </div>
 
           <div class="rating">${stars}</div>
@@ -243,8 +243,8 @@
 
           <div class="actions">
             ${isApproved 
-              ? `<button class="btn-action btn-unapprove" onclick="updateStatus('${t.id}', 'pending')">🟡 Ocultar</button>`
-              : `<button class="btn-action btn-approve" onclick="updateStatus('${t.id}', 'approved')">🟢 Aprovar Agora</button>`
+              ? `<button class="btn-action btn-unapprove" onclick="updateStatus('${t.id}', 'pending')">🟡 Hide</button>`
+              : `<button class="btn-action btn-approve" onclick="updateStatus('${t.id}', 'approved')">🟢 Approve Now</button>`
             }
             <button class="btn-action btn-delete" onclick="deleteTestimonial('${t.id}')">🗑️</button>
           </div>
@@ -252,7 +252,7 @@
       `;
     }
 
-    // Alterar Status (Aprovar/Ocultar)
+    // Update review status (Approve / Hide)
     async function updateStatus(id, newStatus) {
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?id=eq.${id}`, {
@@ -271,13 +271,13 @@
           renderLists();
         }
       } catch (err) {
-        alert("Erro ao atualizar status.");
+        alert("Error updating review status.");
       }
     }
 
-    // Excluir Depoimento
+    // Delete review
     async function deleteTestimonial(id) {
-      if (!confirm("Tem certeza que deseja apagar este depoimento?")) return;
+      if (!confirm("Are you sure you want to delete this review?")) return;
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?id=eq.${id}`, {
@@ -293,11 +293,11 @@
           renderLists();
         }
       } catch (err) {
-        alert("Erro ao deletar.");
+        alert("Error deleting review.");
       }
     }
 
-    // Formulario de Criacao Manual
+    // Manual Creation Form Logic
     const fileInput = document.getElementById('media-files');
     const mediaGrid = document.getElementById('media-grid');
 
@@ -332,7 +332,7 @@
       });
     }
 
-    // Stars
+    // Rating star handler
     const stars = document.querySelectorAll('.star');
     stars.forEach(star => {
       star.addEventListener('click', (e) => {
@@ -345,7 +345,7 @@
       });
     });
 
-    // Upload Supabase Storage
+    // Upload files to Supabase Storage
     async function uploadAllMedia(files) {
       if (files.length === 0) return [];
       const promises = files.map(async (file) => {
@@ -375,13 +375,13 @@
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.innerText = "Publicando...";
+      btn.innerText = "Publishing...";
 
       try {
         const uploadedMedia = await uploadAllMedia(selectedFiles);
         const customerName = document.getElementById('name').value;
         
-        // Gera foto de perfil estilizada com as iniciais do cliente
+        // Auto-generate avatar using customer initials
         const generatedAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(customerName)}&background=2563eb&color=ffffff&bold=true`;
 
         const data = {
@@ -406,7 +406,7 @@
         });
 
         if (res.ok) {
-          alert("✨ Depoimento criado com sucesso!");
+          alert("✨ Review created successfully!");
           e.target.reset();
           selectedFiles = [];
           renderPreviews();
@@ -414,14 +414,14 @@
           switchTab('approved');
         }
       } catch (err) {
-        alert("Erro ao salvar.");
+        alert("Error creating review.");
       } finally {
         btn.disabled = false;
-        btn.innerText = "Publicar Depoimento";
+        btn.innerText = "Publish Review";
       }
     });
 
-    // Iniciar
+    // Initialize list
     loadTestimonials();
   </script>
 </body>
