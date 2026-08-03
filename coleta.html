@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Deixe sua Avaliação</title>
+  <title>Leave Your Review</title>
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; }
@@ -18,14 +18,14 @@
     input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; transition: all 0.2s; }
     input[type="text"]:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     
-    /* Area de Dropzone */
+    /* File Dropzone */
     .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; transition: all 0.2s; }
     .file-dropzone:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.03); }
     .file-dropzone input { display: none; }
     .file-dropzone-text { font-size: 13px; color: #a1a1aa; }
     .file-dropzone-text span { color: #3b82f6; font-weight: 600; }
 
-    /* Grid de Miniaturas */
+    /* Media Grid */
     .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 12px; }
     .media-item { position: relative; width: 100%; height: 85px; border-radius: 10px; overflow: hidden; border: 1px solid #3f3f46; background: #000; }
     .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
@@ -33,7 +33,7 @@
     
     .btn-remove-item { position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.85); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; backdrop-filter: blur(4px); }
 
-    /* Rating Interativo */
+    /* Interactive Rating */
     .star-rating { display: flex; justify-content: center; gap: 10px; font-size: 36px; cursor: pointer; user-select: none; margin: 8px 0 16px 0; }
     .star { color: #27272a; transition: color 0.15s ease, transform 0.15s ease; }
     .star.active { color: #fbbf24; text-shadow: 0 0 14px rgba(251, 191, 36, 0.4); }
@@ -43,7 +43,7 @@
     button[type="submit"]:active { transform: scale(0.98); opacity: 0.9; }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Tela de Sucesso */
+    /* Success Screen */
     .success-screen { display: none; text-align: center; padding: 20px 0; }
     .success-icon { font-size: 48px; margin-bottom: 12px; }
     .success-screen h3 { font-size: 20px; color: #fff; margin: 0 0 8px 0; }
@@ -53,13 +53,13 @@
 <body>
   <div class="card">
     <div id="form-container">
-      <div class="brand">Sua Opinião Importa</div>
-      <h2>Como foi sua experiência?</h2>
-      <p class="subtitle">Envie fotos ou vídeos do seu produto e ajude outros clientes!</p>
+      <div class="brand">Your Feedback Matters</div>
+      <h2>How was your experience?</h2>
+      <p class="subtitle">Upload photos or videos of your product to help future shoppers!</p>
 
       <form id="public-form">
         <div class="form-group">
-          <label>Qual a sua nota?</label>
+          <label>Overall Rating</label>
           <div class="star-rating" id="star-container">
             <span class="star active" data-value="1">★</span>
             <span class="star active" data-value="2">★</span>
@@ -70,20 +70,20 @@
         </div>
 
         <div class="form-group">
-          <label>Seu Nome *</label>
-          <input type="text" id="name" placeholder="Ex: Maria Silva" required>
+          <label>Your Name *</label>
+          <input type="text" id="name" placeholder="e.g. Sarah Jenkins" required>
         </div>
         
         <div class="form-group">
-          <label>Sua Cidade / Empresa (Opcional)</label>
-          <input type="text" id="business" placeholder="Ex: São Paulo - SP">
+          <label>Location / Company (Optional)</label>
+          <input type="text" id="business" placeholder="e.g. New York, NY">
         </div>
 
         <div class="form-group">
-          <label>Fotos ou Vídeos do Produto</label>
+          <label>Product Photos or Videos</label>
           <div class="file-dropzone" onclick="document.getElementById('media-files').click()">
             <div class="file-dropzone-text">
-              📷 🎥 <span>Toque para escolher da galeria</span>
+              📷 🎥 <span>Click or tap to upload media</span>
             </div>
             <input type="file" id="media-files" accept="image/*,video/*" multiple>
           </div>
@@ -91,19 +91,19 @@
         </div>
 
         <div class="form-group">
-          <label>Seu Depoimento *</label>
-          <textarea id="text" rows="4" placeholder="Conte o que achou do produto, da entrega ou do atendimento..." required></textarea>
+          <label>Your Review *</label>
+          <textarea id="text" rows="4" placeholder="Tell us what you loved about the product, delivery, or support..." required></textarea>
         </div>
 
-        <button type="submit" id="submit-btn">Enviar Avaliação</button>
+        <button type="submit" id="submit-btn">Submit Review</button>
       </form>
     </div>
 
-    <!-- Mensagem de Agradecimento Pós-Envio -->
+    <!-- Post-submission Success Screen -->
     <div class="success-screen" id="success-screen">
       <div class="success-icon">🎉</div>
-      <h3>Avaliação enviada com sucesso!</h3>
-      <p>Muito obrigado pelo seu tempo e carinho. Sua avaliação ajuda nossa comunidade a crescer cada vez mais!</p>
+      <h3>Thank you for your review!</h3>
+      <p>Your review has been submitted successfully. We truly appreciate your time and feedback!</p>
     </div>
   </div>
 
@@ -147,7 +147,7 @@
 
           const tag = document.createElement('span');
           tag.className = 'video-tag';
-          tag.innerText = '🎥 VÍDEO';
+          tag.innerText = '🎥 VIDEO';
           itemDiv.appendChild(tag);
         } else {
           const img = document.createElement('img');
@@ -165,7 +165,7 @@
       renderPreviews();
     }
 
-    // Estrelas
+    // Stars rating handler
     const stars = document.querySelectorAll('.star');
     stars.forEach(star => {
       star.addEventListener('click', (e) => {
@@ -182,7 +182,7 @@
       });
     }
 
-    // Upload Supabase Storage
+    // Upload files to Supabase Storage
     async function uploadAllMedia(files) {
       if (files.length === 0) return [];
       
@@ -214,19 +214,19 @@
       return results.filter(r => r !== null);
     }
 
-    // Submit do Cliente (Gera avatar por iniciais e salva como 'pending')
+    // Submit form logic
     document.getElementById('public-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       
       btn.disabled = true;
-      btn.innerText = "Enviando suas fotos e depoimento...";
+      btn.innerText = "Uploading media and submitting...";
 
       try {
         const uploadedMediaItems = await uploadAllMedia(selectedFiles);
         const customerName = document.getElementById('name').value;
         
-        // Gera foto de perfil estilizada com as iniciais do cliente
+        // Auto-generate avatar using customer initials
         const generatedAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(customerName)}&background=2563eb&color=ffffff&bold=true`;
 
         const data = {
@@ -236,7 +236,7 @@
           media_items: uploadedMediaItems,
           rating: currentRating,
           testimonial_text: document.getElementById('text').value,
-          status: 'pending' // Envia para moderação
+          status: 'pending' // Pending admin approval
         };
 
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials`, {
@@ -254,14 +254,14 @@
           document.getElementById('form-container').style.display = 'none';
           document.getElementById('success-screen').style.display = 'block';
         } else {
-          alert("Ops! Ocorreu um erro ao enviar. Tente novamente.");
+          alert("Oops! Something went wrong while submitting. Please try again.");
           btn.disabled = false;
-          btn.innerText = "Enviar Avaliação";
+          btn.innerText = "Submit Review";
         }
       } catch (err) {
-        alert("Erro de conexão.");
+        alert("Network error. Please try again.");
         btn.disabled = false;
-        btn.innerText = "Enviar Avaliação";
+        btn.innerText = "Submit Review";
       }
     });
   </script>
