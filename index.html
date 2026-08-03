@@ -1,13 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>ProofPulse Widget — Local Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProofPulse Review Widget</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #09090b; color: #f4f4f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+
+    /* Main Container */
+    .proofpulse-widget { width: 100%; max-width: 800px; margin: 0 auto; }
+
+    /* Summary Bar */
+    .widget-summary { display: flex; align-items: center; justify-content: space-between; background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .summary-left { display: flex; align-items: center; gap: 14px; }
+    .summary-score { font-size: 32px; font-weight: 800; color: #ffffff; letter-spacing: -1px; }
+    .summary-stars { color: #fbbf24; font-size: 20px; letter-spacing: 2px; }
+    .summary-count { font-size: 13px; color: #a1a1aa; font-weight: 500; margin-top: 2px; }
+
+    .btn-write-review { background: #2563eb; color: #ffffff; text-decoration: none; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; transition: all 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+    .btn-write-review:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+    /* Grid Layout */
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+    /* Card Item */
+    .review-card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: border-color 0.2s, transform 0.2s; }
+    .review-card:hover { border-color: rgba(59, 130, 246, 0.4); transform: translateY(-2px); }
+
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(59, 130, 246, 0.3); background: #27272a; }
+    .user-info h4 { margin: 0; font-size: 15px; color: #ffffff; font-weight: 600; }
+    .user-info p { margin: 2px 0 0 0; font-size: 12px; color: #a1a1aa; }
+
+    .verified-badge { font-size: 10px; font-weight: 700; color: #3b82f6; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); padding: 4px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; }
+
+    .star-rating { color: #fbbf24; font-size: 14px; margin-bottom: 10px; letter-spacing: 1px; }
+    .review-text { font-size: 14px; color: #d4d4d8; line-height: 1.55; margin: 0 0 16px 0; word-break: break-word; }
+
+    /* Media Gallery inside Review */
+    .media-gallery { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-top: auto; }
+    .media-gallery::-webkit-scrollbar { height: 4px; }
+    .media-gallery::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+
+    .media-item { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; border: 1px solid #27272a; cursor: pointer; flex-shrink: 0; background: #000; transition: opacity 0.2s; }
+    .media-item:hover { opacity: 0.85; }
+
+    .empty-state { text-align: center; grid-column: 1 / -1; padding: 40px 20px; color: #a1a1aa; font-size: 14px; background: #141417; border-radius: 16px; border: 1px dashed #27272a; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .widget-summary { flex-direction: column; gap: 14px; text-align: center; }
+      .summary-left { flex-direction: column; gap: 6px; }
+      .reviews-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <h1>ProofPulse Widget Test Page</h1>
-  <p>This page just loads widget.js. The floating testimonial card should appear in the bottom-left corner.</p>
 
-  <script src="widget.js"></script>
+  <div class="proofpulse-widget">
+    <!-- Top Summary Header -->
+    <div class="widget-summary">
+      <div class="summary-left">
+        <div class="summary-score" id="avg-score">5.0</div>
+        <div>
+          <div class="summary-stars" id="avg-stars">★★★★★</div>
+          <div class="summary-count" id="total-count">Based on verified customer reviews</div>
+        </div>
+      </div>
+      <a href="coleta.html" class="btn-write-review">Write a Review</a>
+    </div>
+
+    <!-- Reviews Grid -->
+    <div class="reviews-grid" id="reviews-container">
+      <div class="empty-state">Loading verified reviews...</div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://udctjyetnervitwkjhib.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_DJMt-u-HyH0NG2AOAsriaQ_4PZpr9YC";
+
+    async function fetchApprovedReviews() {
+      const container = document.getElementById('reviews-container');
+      
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?status=eq.approved&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!res.ok) throw new Error("Failed to load reviews");
+
+        const reviews = await res.json();
+
+        if (reviews.length === 0) {
+          container.innerHTML = `<div class="empty-state">No customer reviews published yet. Be the first to leave one!</div>`;
+          return;
+        }
+
+        // Calculate Average Score
+        const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 5), 0);
+        const avgRating = (totalRating / reviews.length).toFixed(1);
+        
+        document.getElementById('avg-score').innerText = avgRating;
+        document.getElementById('total-count').innerText = `Based on ${reviews.length} verified review${reviews.length > 1 ? 's' : ''}`;
+        document.getElementById('avg-stars').innerText = "★".repeat(Math.round(avgRating)) + "☆".repeat(5 - Math.round(avgRating));
+
+        // Render Cards
+        container.innerHTML = reviews.map(r => renderCardHTML(r)).join('');
+
+      } catch (err) {
+        console.error("Widget Error:", err);
+        container.innerHTML = `<div class="empty-state">Unable to load reviews right now.</div>`;
+      }
+    }
+
+    function renderCardHTML(r) {
+      const ratingStars = "★".repeat(r.rating || 5) + "☆".repeat(5 - (r.rating || 5));
+      const mediaList = r.media_items || [];
+      if (mediaList.length === 0 && r.media_url) {
+        mediaList.push({ url: r.media_url, type: r.media_type });
+      }
+
+      let galleryHTML = '';
+      if (mediaList.length > 0) {
+        galleryHTML = `<div class="media-gallery">` + mediaList.map(item => {
+          if (item.type === 'video') {
+            return `<video class="media-item" src="${item.url}" controls></video>`;
+          }
+          return `<img class="media-item" src="${item.url}" onclick="window.open('${item.url}', '_blank')" />`;
+        }).join('') + `</div>`;
+      }
+
+      return `
+        <div class="review-card">
+          <div>
+            <div class="card-header">
+              <div class="user-profile">
+                <img class="avatar" src="${r.avatar_url}" alt="${r.customer_name}">
+                <div class="user-info">
+                  <h4>${r.customer_name}</h4>
+                  <p>${r.business_name || 'Verified Buyer'}</p>
+                </div>
+              </div>
+              <span class="verified-badge">✓ Verified</span>
+            </div>
+
+            <div class="star-rating">${ratingStars}</div>
+            <p class="review-text">"${r.testimonial_text}"</p>
+          </div>
+          ${galleryHTML}
+        </div>
+      `;
+    }
+
+    fetchApprovedReviews();
+  </script>
 </body>
 </html>
