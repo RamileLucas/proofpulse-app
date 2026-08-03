@@ -2,42 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ProofPulse - Add Testimonial</title>
   <style>
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-    .card { background: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
-    .brand { color: #3b82f6; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
-    h2 { margin: 0 0 24px 0; font-size: 22px; font-weight: 600; color: #ffffff; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; }
+    
+    .card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); }
+    .brand { color: #3b82f6; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    h2 { margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+    
     .form-group { margin-bottom: 18px; }
-    label { display: block; font-size: 13px; color: #a1a1aa; margin-bottom: 6px; font-weight: 500; }
-    input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 12px 14px; border-radius: 8px; font-size: 14px; transition: all 0.2s ease; }
+    label { display: block; font-size: 12px; color: #a1a1aa; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; transition: all 0.2s; }
     input[type="text"]:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     
-    /* Estilo do Input de Arquivo */
-    input[type="file"] { width: 100%; background: #09090b; border: 1px dashed #3f3f46; color: #a1a1aa; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px; }
-    input[type="file"]:hover { border-color: #3b82f6; color: #ffffff; }
+    /* Area de Upload Customizada */
+    .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; transition: all 0.2s; position: relative; }
+    .file-dropzone:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.03); }
+    .file-dropzone input { display: none; }
+    .file-dropzone-text { font-size: 13px; color: #a1a1aa; }
+    .file-dropzone-text span { color: #3b82f6; font-weight: 600; }
 
-    /* Star Rating Interativo */
-    .star-rating { display: flex; gap: 8px; font-size: 28px; cursor: pointer; user-select: none; margin-top: 4px; }
-    .star { color: #3f3f46; transition: color 0.15s ease, transform 0.15s ease; }
-    .star.active { color: #fbbf24; }
-    .star:hover { transform: scale(1.15); }
+    /* Container de Previa com o Botao X */
+    .preview-container { display: none; position: relative; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #3f3f46; background: #000; }
+    .preview-container img, .preview-container video { width: 100%; max-height: 240px; display: block; object-fit: contain; }
+    .btn-remove-preview { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; backdrop-filter: blur(4px); transition: transform 0.15s ease; z-index: 10; }
+    .btn-remove-preview:active { transform: scale(0.9); }
 
-    button { width: 100%; background: #2563eb; color: #ffffff; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
-    button:hover { background: #1d4ed8; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    /* Estrelas Gigantes Mobile Friendly */
+    .star-rating { display: flex; gap: 10px; font-size: 32px; cursor: pointer; user-select: none; margin-top: 4px; }
+    .star { color: #27272a; transition: color 0.15s ease, transform 0.15s ease; }
+    .star.active { color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
+    .star:active { transform: scale(1.2); }
 
-    /* Toast Notification */
-    .toast { display: none; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; text-align: center; font-weight: 500; }
-    .toast.success { display: block; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #4ade80; }
-    .toast.error { display: block; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; }
+    /* Botao Principal */
+    button[type="submit"] { width: 100%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39); transition: all 0.2s; margin-top: 10px; }
+    button[type="submit"]:active { transform: scale(0.98); opacity: 0.9; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .toast { display: none; padding: 14px; border-radius: 12px; font-size: 14px; margin-bottom: 20px; text-align: center; font-weight: 600; }
+    .toast.success { display: block; background: rgba(34, 197, 94, 0.12); border: 1px solid #22c55e; color: #4ade80; }
+    .toast.error { display: block; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; color: #f87171; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="brand">ProofPulse Dashboard</div>
+    <div class="brand">ProofPulse Studio</div>
     <h2>+ Add Testimonial</h2>
     
     <div id="toast" class="toast"></div>
@@ -45,17 +56,30 @@
     <form id="add-form">
       <div class="form-group">
         <label>Customer Name *</label>
-        <input type="text" id="name" placeholder="e.g. Sarah Jenkins" required>
+        <input type="text" id="name" placeholder="Sarah Jenkins" required>
       </div>
       
       <div class="form-group">
-        <label>Business / Company Name</label>
-        <input type="text" id="business" placeholder="e.g. TechFlow Inc">
+        <label>Business Name / Role</label>
+        <input type="text" id="business" placeholder="TechFlow Inc">
       </div>
 
+      <!-- Upload de Foto ou Video -->
       <div class="form-group">
-        <label>Customer Photo (Upload from PC/Phone)</label>
-        <input type="file" id="avatar-file" accept="image/*">
+        <label>Customer Photo or Video</label>
+        
+        <div class="file-dropzone" id="dropzone" onclick="document.getElementById('media-file').click()">
+          <div class="file-dropzone-text">
+            📷 🎥 <span>Tap to upload photo or video</span>
+          </div>
+          <input type="file" id="media-file" accept="image/*,video/*">
+        </div>
+
+        <!-- Container da Previa com o Botao X -->
+        <div class="preview-container" id="preview-container">
+          <button type="button" class="btn-remove-preview" id="btn-remove">✕</button>
+          <div id="preview-content"></div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -74,7 +98,7 @@
         <textarea id="text" rows="3" placeholder="What did they say about your product?" required></textarea>
       </div>
 
-      <button type="submit" id="submit-btn">Save Testimonial</button>
+      <button type="submit" id="submit-btn">Publish Testimonial</button>
     </form>
   </div>
 
@@ -82,6 +106,49 @@
     const SUPABASE_URL = "https://udctjyetnervitwkjhib.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_DJMt-u-HyH0NG2AOAsriaQ_4PZpr9YC";
     let currentRating = 5;
+    let selectedFile = null;
+
+    // Elementos de Previa
+    const fileInput = document.getElementById('media-file');
+    const previewContainer = document.getElementById('preview-container');
+    const previewContent = document.getElementById('preview-content');
+    const btnRemove = document.getElementById('btn-remove');
+    const dropzone = document.getElementById('dropzone');
+
+    // Manipulacao do Upload e Previa de Foto / Video
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      selectedFile = file;
+      const objectUrl = URL.createObjectURL(file);
+      previewContent.innerHTML = '';
+
+      if (file.type.startsWith('video/')) {
+        const video = document.createElement('video');
+        video.src = objectUrl;
+        video.controls = true;
+        video.playsInline = true;
+        previewContent.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = objectUrl;
+        previewContent.appendChild(img);
+      }
+
+      previewContainer.style.display = 'block';
+      dropzone.style.display = 'none';
+    });
+
+    // Botao X para apagar a previa
+    btnRemove.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedFile = null;
+      fileInput.value = '';
+      previewContent.innerHTML = '';
+      previewContainer.style.display = 'none';
+      dropzone.style.display = 'block';
+    });
 
     // Lógica das Estrelas
     const stars = document.querySelectorAll('.star');
@@ -100,15 +167,15 @@
       });
     }
 
-    // Função de Upload de Imagem para o Supabase Storage
-    async function uploadAvatar(file) {
-      if (!file) return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'; // foto padrão
+    // Enviar Arquivo para o Supabase Storage
+    async function uploadMedia(file) {
+      if (!file) return { url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', type: 'image' };
       
+      const isVideo = file.type.startsWith('video/');
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
 
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${filePath}`, {
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${fileName}`, {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_ANON_KEY,
@@ -119,33 +186,34 @@
       });
 
       if (res.ok) {
-        return `${SUPABASE_URL}/storage/v1/object/public/avatars/${filePath}`;
+        return {
+          url: `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`,
+          type: isVideo ? 'video' : 'image'
+        };
       } else {
-        console.error("Upload error");
-        return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+        return { url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', type: 'image' };
       }
     }
 
-    // Envio do Formulário
+    // Submit
     document.getElementById('add-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       const toast = document.getElementById('toast');
-      const fileInput = document.getElementById('avatar-file');
       
       btn.disabled = true;
-      btn.innerText = "Uploading & Saving...";
+      btn.innerText = "Uploading Media & Saving...";
       toast.className = "toast";
 
       try {
-        // 1. Faz upload da foto se houver
-        let avatarUrl = await uploadAvatar(fileInput.files[0]);
+        const media = await uploadMedia(selectedFile);
 
-        // 2. Salva o depoimento no banco de dados
         const data = {
           customer_name: document.getElementById('name').value,
           business_name: document.getElementById('business').value,
-          avatar_url: avatarUrl,
+          avatar_url: media.type === 'image' ? media.url : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+          media_url: media.url,
+          media_type: media.type,
           rating: currentRating,
           testimonial_text: document.getElementById('text').value,
           status: 'approved'
@@ -163,13 +231,14 @@
         });
 
         if (res.ok) {
-          toast.innerText = "✨ Testimonial & photo added successfully!";
+          toast.innerText = "✨ Testimonial & Media published successfully!";
           toast.classList.add('success');
           e.target.reset();
+          btnRemove.click(); // reseta a previa
           currentRating = 5;
           updateStars();
         } else {
-          toast.innerText = "❌ Error saving testimonial.";
+          toast.innerText = "❌ Error saving to database.";
           toast.classList.add('error');
         }
       } catch (err) {
@@ -177,7 +246,7 @@
         toast.classList.add('error');
       } finally {
         btn.disabled = false;
-        btn.innerText = "Save Testimonial";
+        btn.innerText = "Publish Testimonial";
       }
     });
   </script>
