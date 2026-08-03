@@ -8,7 +8,7 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; }
     
-    .card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); }
+    .card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px; width: 100%; max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); }
     .brand { color: #3b82f6; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
     h2 { margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
     
@@ -18,17 +18,21 @@
     input[type="text"]:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     
     /* Area de Upload Customizada */
-    .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; transition: all 0.2s; position: relative; }
+    .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; transition: all 0.2s; }
     .file-dropzone:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.03); }
     .file-dropzone input { display: none; }
     .file-dropzone-text { font-size: 13px; color: #a1a1aa; }
     .file-dropzone-text span { color: #3b82f6; font-weight: 600; }
 
-    /* Container de Previa com o Botao X */
-    .preview-container { display: none; position: relative; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #3f3f46; background: #000; }
-    .preview-container img, .preview-container video { width: 100%; max-height: 240px; display: block; object-fit: contain; }
-    .btn-remove-preview { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; backdrop-filter: blur(4px); transition: transform 0.15s ease; z-index: 10; }
-    .btn-remove-preview:active { transform: scale(0.9); }
+    /* Grid de Miniaturas com Botao X Individual */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 12px; }
+    .media-item { position: relative; width: 100%; height: 85px; border-radius: 10px; overflow: hidden; border: 1px solid #3f3f46; background: #000; }
+    .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
+    .media-item .video-tag { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 9px; padding: 2px 4px; border-radius: 4px; }
+    
+    /* Botao X de remoção individual */
+    .btn-remove-item { position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.85); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; backdrop-filter: blur(4px); transition: transform 0.15s ease; z-index: 10; }
+    .btn-remove-item:active { transform: scale(0.85); }
 
     /* Estrelas Gigantes Mobile Friendly */
     .star-rating { display: flex; gap: 10px; font-size: 32px; cursor: pointer; user-select: none; margin-top: 4px; }
@@ -64,22 +68,19 @@
         <input type="text" id="business" placeholder="TechFlow Inc">
       </div>
 
-      <!-- Upload de Foto ou Video -->
+      <!-- Upload de Varias Fotos e Videos -->
       <div class="form-group">
-        <label>Customer Photo or Video</label>
+        <label>Customer Photos / Videos (Multiple)</label>
         
-        <div class="file-dropzone" id="dropzone" onclick="document.getElementById('media-file').click()">
+        <div class="file-dropzone" onclick="document.getElementById('media-files').click()">
           <div class="file-dropzone-text">
-            📷 🎥 <span>Tap to upload photo or video</span>
+            📷 🎥 <span>Tap to add photos or videos</span>
           </div>
-          <input type="file" id="media-file" accept="image/*,video/*">
+          <input type="file" id="media-files" accept="image/*,video/*" multiple>
         </div>
 
-        <!-- Container da Previa com o Botao X -->
-        <div class="preview-container" id="preview-container">
-          <button type="button" class="btn-remove-preview" id="btn-remove">✕</button>
-          <div id="preview-content"></div>
-        </div>
+        <!-- Grid de Miniaturas -->
+        <div class="media-grid" id="media-grid"></div>
       </div>
 
       <div class="form-group">
@@ -106,49 +107,62 @@
     const SUPABASE_URL = "https://udctjyetnervitwkjhib.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_DJMt-u-HyH0NG2AOAsriaQ_4PZpr9YC";
     let currentRating = 5;
-    let selectedFile = null;
+    let selectedFiles = []; // Array que guarda todos os arquivos selecionados
 
-    // Elementos de Previa
-    const fileInput = document.getElementById('media-file');
-    const previewContainer = document.getElementById('preview-container');
-    const previewContent = document.getElementById('preview-content');
-    const btnRemove = document.getElementById('btn-remove');
-    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('media-files');
+    const mediaGrid = document.getElementById('media-grid');
 
-    // Manipulacao do Upload e Previa de Foto / Video
+    // Ao escolher arquivos no input
     fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      selectedFile = file;
-      const objectUrl = URL.createObjectURL(file);
-      previewContent.innerHTML = '';
-
-      if (file.type.startsWith('video/')) {
-        const video = document.createElement('video');
-        video.src = objectUrl;
-        video.controls = true;
-        video.playsInline = true;
-        previewContent.appendChild(video);
-      } else {
-        const img = document.createElement('img');
-        img.src = objectUrl;
-        previewContent.appendChild(img);
-      }
-
-      previewContainer.style.display = 'block';
-      dropzone.style.display = 'none';
+      const files = Array.from(e.target.files);
+      files.forEach(f => selectedFiles.push(f));
+      renderPreviews();
+      fileInput.value = ''; // Limpa o input para poder adicionar mais depois se quiser
     });
 
-    // Botao X para apagar a previa
-    btnRemove.addEventListener('click', (e) => {
-      e.stopPropagation();
-      selectedFile = null;
-      fileInput.value = '';
-      previewContent.innerHTML = '';
-      previewContainer.style.display = 'none';
-      dropzone.style.display = 'block';
-    });
+    // Renderiza a Galeria de Miniaturas com o Botão X individual
+    function renderPreviews() {
+      mediaGrid.innerHTML = '';
+      selectedFiles.forEach((file, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'media-item';
+
+        const btnRemove = document.createElement('button');
+        btnRemove.className = 'btn-remove-item';
+        btnRemove.innerText = '✕';
+        btnRemove.onclick = (e) => {
+          e.stopPropagation();
+          removeFile(index);
+        };
+
+        const objectUrl = URL.createObjectURL(file);
+
+        if (file.type.startsWith('video/')) {
+          const video = document.createElement('video');
+          video.src = objectUrl;
+          video.muted = true;
+          itemDiv.appendChild(video);
+
+          const tag = document.createElement('span');
+          tag.className = 'video-tag';
+          tag.innerText = '🎥 VIDEO';
+          itemDiv.appendChild(tag);
+        } else {
+          const img = document.createElement('img');
+          img.src = objectUrl;
+          itemDiv.appendChild(img);
+        }
+
+        itemDiv.appendChild(btnRemove);
+        mediaGrid.appendChild(itemDiv);
+      });
+    }
+
+    // Função para remover um arquivo específico pelo índice
+    function removeFile(index) {
+      selectedFiles.splice(index, 1);
+      renderPreviews();
+    }
 
     // Lógica das Estrelas
     const stars = document.querySelectorAll('.star');
@@ -167,32 +181,36 @@
       });
     }
 
-    // Enviar Arquivo para o Supabase Storage
-    async function uploadMedia(file) {
-      if (!file) return { url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', type: 'image' };
+    // Upload de múltiplos arquivos para o Supabase Storage
+    async function uploadAllMedia(files) {
+      if (files.length === 0) return [];
       
-      const isVideo = file.type.startsWith('video/');
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
+      const uploadPromises = files.map(async (file) => {
+        const isVideo = file.type.startsWith('video/');
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 5)}.${fileExt}`;
 
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${fileName}`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': file.type
-        },
-        body: file
+        const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${fileName}`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': file.type
+          },
+          body: file
+        });
+
+        if (res.ok) {
+          return {
+            url: `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`,
+            type: isVideo ? 'video' : 'image'
+          };
+        }
+        return null;
       });
 
-      if (res.ok) {
-        return {
-          url: `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`,
-          type: isVideo ? 'video' : 'image'
-        };
-      } else {
-        return { url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', type: 'image' };
-      }
+      const results = await Promise.all(uploadPromises);
+      return results.filter(r => r !== null);
     }
 
     // Submit
@@ -202,18 +220,20 @@
       const toast = document.getElementById('toast');
       
       btn.disabled = true;
-      btn.innerText = "Uploading Media & Saving...";
+      btn.innerText = `Uploading ${selectedFiles.length} File(s)...`;
       toast.className = "toast";
 
       try {
-        const media = await uploadMedia(selectedFile);
+        const uploadedMediaItems = await uploadAllMedia(selectedFiles);
+
+        // Foto principal (avatar) pega a 1ª foto se existir
+        const mainAvatar = uploadedMediaItems.find(m => m.type === 'image')?.url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
 
         const data = {
           customer_name: document.getElementById('name').value,
           business_name: document.getElementById('business').value,
-          avatar_url: media.type === 'image' ? media.url : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-          media_url: media.url,
-          media_type: media.type,
+          avatar_url: mainAvatar,
+          media_items: uploadedMediaItems,
           rating: currentRating,
           testimonial_text: document.getElementById('text').value,
           status: 'approved'
@@ -231,10 +251,11 @@
         });
 
         if (res.ok) {
-          toast.innerText = "✨ Testimonial & Media published successfully!";
+          toast.innerText = `✨ Published successfully with ${uploadedMediaItems.length} media file(s)!`;
           toast.classList.add('success');
           e.target.reset();
-          btnRemove.click(); // reseta a previa
+          selectedFiles = [];
+          renderPreviews();
           currentRating = 5;
           updateStars();
         } else {
