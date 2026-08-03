@@ -214,7 +214,7 @@
       return results.filter(r => r !== null);
     }
 
-    // Submit do Cliente (Salva como 'pending')
+    // Submit do Cliente (Gera avatar por iniciais e salva como 'pending')
     document.getElementById('public-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
@@ -224,16 +224,19 @@
 
       try {
         const uploadedMediaItems = await uploadAllMedia(selectedFiles);
-        const mainAvatar = uploadedMediaItems.find(m => m.type === 'image')?.url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+        const customerName = document.getElementById('name').value;
+        
+        // Gera foto de perfil estilizada com as iniciais do cliente
+        const generatedAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(customerName)}&background=2563eb&color=ffffff&bold=true`;
 
         const data = {
-          customer_name: document.getElementById('name').value,
+          customer_name: customerName,
           business_name: document.getElementById('business').value,
-          avatar_url: mainAvatar,
+          avatar_url: generatedAvatar,
           media_items: uploadedMediaItems,
           rating: currentRating,
           testimonial_text: document.getElementById('text').value,
-          status: 'pending' // Envia como pendente para aprovação do admin!
+          status: 'pending' // Envia para moderação
         };
 
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials`, {
