@@ -7,13 +7,22 @@
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 16px; }
-    
-    .dashboard-container { width: 100%; max-width: 650px; margin-top: 10px; }
+
+    /* Login Screen Container */
+    .login-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; min-height: 85vh; }
+    .login-card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 380px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); text-align: center; }
+    .login-card h2 { margin: 8px 0 20px 0; font-size: 22px; font-weight: 700; color: #ffffff; }
+
+    /* Dashboard Container */
+    .dashboard-container { width: 100%; max-width: 650px; margin-top: 10px; display: none; }
     
     /* Header and Navigation Tabs */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .brand { color: #3b82f6; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
     h2 { margin: 4px 0 0 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+
+    .btn-logout { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .btn-logout:hover { background: #ef4444; color: #fff; }
 
     .nav-tabs { display: flex; gap: 8px; background: #141417; padding: 6px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 20px; }
     .tab-btn { flex: 1; background: transparent; color: #a1a1aa; border: none; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
@@ -53,9 +62,10 @@
     .btn-delete:hover { background: #ef4444; color: #fff; }
 
     /* Form Styles */
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 16px; text-align: left; }
     label { display: block; font-size: 12px; color: #a1a1aa; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
-    input[type="text"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; }
+    input[type="text"], input[type="email"], input[type="password"], textarea { width: 100%; background: #09090b; border: 1px solid #27272a; color: #ffffff; padding: 14px; border-radius: 12px; font-size: 15px; }
+    input:focus, textarea:focus { outline: none; border-color: #3b82f6; }
     
     .file-dropzone { border: 2px dashed #27272a; border-radius: 14px; padding: 20px; text-align: center; background: #09090b; cursor: pointer; }
     .file-dropzone input { display: none; }
@@ -72,16 +82,40 @@
 
     button[type="submit"] { width: 100%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
+    .error-msg { color: #f87171; font-size: 13px; margin-bottom: 12px; display: none; }
     .empty-state { text-align: center; padding: 40px 20px; color: #a1a1aa; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
+
+  <!-- VIEW 1: LOGIN FORM -->
+  <div class="login-wrapper" id="login-screen">
+    <div class="login-card">
+      <div class="brand">ProofPulse Admin</div>
+      <h2>Sign In</h2>
+      <div class="error-msg" id="login-error">Invalid email or password.</div>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="admin@proofpulse.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" id="btn-login-submit">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- VIEW 2: DASHBOARD PANEL -->
+  <div class="dashboard-container" id="dashboard-screen">
     <div class="header">
       <div>
         <div class="brand">ProofPulse Dashboard</div>
         <h2>Review Management</h2>
       </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 
     <!-- Navigation Tabs -->
@@ -145,11 +179,72 @@
     const SUPABASE_URL = "https://udctjyetnervitwkjhib.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_DJMt-u-HyH0NG2AOAsriaQ_4PZpr9YC";
     
+    let authToken = localStorage.getItem("pp_auth_token") || null;
     let allTestimonials = [];
     let currentRating = 5;
     let selectedFiles = [];
 
-    // Switch active tab
+    // Check Auth Status on Load
+    function initAuth() {
+      if (authToken) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('dashboard-screen').style.display = 'block';
+        loadTestimonials();
+      } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('dashboard-screen').style.display = 'none';
+      }
+    }
+
+    // Login Handler
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorEl = document.getElementById('login-error');
+      const btn = document.getElementById('btn-login-submit');
+
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.innerText = "Authenticating...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.access_token) {
+          authToken = data.access_token;
+          localStorage.setItem("pp_auth_token", authToken);
+          initAuth();
+        } else {
+          errorEl.innerText = data.error_description || "Invalid email or password.";
+          errorEl.style.display = 'block';
+        }
+      } catch (err) {
+        errorEl.innerText = "Network error. Please try again.";
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Login";
+      }
+    });
+
+    // Logout Handler
+    function logout() {
+      localStorage.removeItem("pp_auth_token");
+      authToken = null;
+      initAuth();
+    }
+
+    // Navigation Tabs
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -166,15 +261,18 @@
       }
     }
 
-    // Load testimonials from Supabase
+    // Load testimonials
     async function loadTestimonials() {
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?select=*&order=created_at.desc`, {
           headers: {
             apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+            Authorization: `Bearer ${authToken}`
           }
         });
+
+        if (res.status === 401) { logout(); return; }
+
         allTestimonials = await res.json();
         renderLists();
       } catch (err) {
@@ -182,7 +280,7 @@
       }
     }
 
-    // Render pending and approved lists
+    // Render lists
     function renderLists() {
       const pendingList = document.getElementById('list-pending');
       const approvedList = document.getElementById('list-approved');
@@ -193,14 +291,12 @@
       document.getElementById('pending-count').innerText = pendingItems.length;
       document.getElementById('approved-count').innerText = approvedItems.length;
 
-      // Render Pending
       if (pendingItems.length === 0) {
         pendingList.innerHTML = `<div class="empty-state">🎉 No pending reviews to moderate right now!</div>`;
       } else {
         pendingList.innerHTML = pendingItems.map(t => createCardHTML(t)).join('');
       }
 
-      // Render Approved
       if (approvedItems.length === 0) {
         approvedList.innerHTML = `<div class="empty-state">No approved reviews yet.</div>`;
       } else {
@@ -208,7 +304,6 @@
       }
     }
 
-    // Generate HTML for each review card
     function createCardHTML(t) {
       const stars = "★".repeat(t.rating || 5) + "☆".repeat(5 - (t.rating || 5));
       const items = t.media_items || [];
@@ -252,7 +347,6 @@
       `;
     }
 
-    // Update review status (Approve / Hide)
     async function updateStatus(id, newStatus) {
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials?id=eq.${id}`, {
@@ -260,7 +354,7 @@
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            'Authorization': `Bearer ${authToken}`
           },
           body: JSON.stringify({ status: newStatus })
         });
@@ -275,7 +369,6 @@
       }
     }
 
-    // Delete review
     async function deleteTestimonial(id) {
       if (!confirm("Are you sure you want to delete this review?")) return;
 
@@ -284,7 +377,7 @@
           method: 'DELETE',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            'Authorization': `Bearer ${authToken}`
           }
         });
 
@@ -297,7 +390,7 @@
       }
     }
 
-    // Manual Creation Form Logic
+    // Manual Creation
     const fileInput = document.getElementById('media-files');
     const mediaGrid = document.getElementById('media-grid');
 
@@ -332,7 +425,6 @@
       });
     }
 
-    // Rating star handler
     const stars = document.querySelectorAll('.star');
     stars.forEach(star => {
       star.addEventListener('click', (e) => {
@@ -345,7 +437,6 @@
       });
     });
 
-    // Upload files to Supabase Storage
     async function uploadAllMedia(files) {
       if (files.length === 0) return [];
       const promises = files.map(async (file) => {
@@ -357,7 +448,7 @@
           method: 'POST',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Authorization': `Bearer ${authToken}`,
             'Content-Type': file.type
           },
           body: file
@@ -380,8 +471,6 @@
       try {
         const uploadedMedia = await uploadAllMedia(selectedFiles);
         const customerName = document.getElementById('name').value;
-        
-        // Auto-generate avatar using customer initials
         const generatedAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(customerName)}&background=2563eb&color=ffffff&bold=true`;
 
         const data = {
@@ -399,7 +488,7 @@
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Authorization': `Bearer ${authToken}`,
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify(data)
@@ -421,8 +510,8 @@
       }
     });
 
-    // Initialize list
-    loadTestimonials();
+    // Check auth on page load
+    initAuth();
   </script>
 </body>
 </html>
