@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProofPulse - Converta mais visitantes em clientes com Prova Social</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #09090b; color: #f4f4f5; line-height: 1.6; }
+    
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header */
+    header { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(9, 9, 11, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
+    .nav { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 20px; font-weight: 800; color: #ffffff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .logo span { color: #3b82f6; }
+    .nav-buttons { display: flex; gap: 12px; }
+    .btn-login { color: #a1a1aa; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+    .btn-login:hover { color: #ffffff; }
+    .btn-primary { background: #2563eb; color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    /* Hero Section */
+    .hero { padding: 90px 0 60px; text-align: center; }
+    .badge-hero { display: inline-block; padding: 6px 14px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; color: #60a5fa; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+    .hero h1 { font-size: 48px; font-weight: 800; color: #ffffff; line-height: 1.15; max-width: 800px; margin: 0 auto 20px; }
+    .hero h1 span { background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 18px; color: #a1a1aa; max-width: 620px; margin: 0 auto 32px; }
+    .hero-cta { display: flex; justify-content: center; gap: 16px; margin-bottom: 50px; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 10px; }
+
+    /* Mockup Widget Demo */
+    .demo-preview { background: #141417; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px; max-width: 400px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: left; position: relative; }
+    .demo-user { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .demo-avatar { width: 40px; height: 40px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .demo-name { font-size: 14px; font-weight: 700; color: #fff; }
+    .demo-tag { font-size: 10px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; margin-left: 6px; }
+    .demo-stars { color: #fbbf24; font-size: 14px; margin-bottom: 6px; }
+    .demo-text { font-size: 13px; color: #d4d4d8; }
+
+    /* Features Section */
+    .features { padding: 80px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+    .section-title { text-align: center; margin-bottom: 50px; }
+    .section-title h2 { font-size: 32px; color: #fff; font-weight: 800; margin-bottom: 10px; }
+    .section-title p { color: #a1a1aa; font-size: 16px; }
+
+    .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .feature-card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); padding: 28px; border-radius: 16px; transition: transform 0.2s; }
+    .feature-card:hover { transform: translateY(-4px); }
+    .feature-icon { font-size: 28px; margin-bottom: 16px; display: inline-block; }
+    .feature-card h3 { font-size: 18px; color: #fff; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: #a1a1aa; }
+
+    /* Pricing Section */
+    .pricing { padding: 80px 0; background: #0c0c0e; border-top: 1px solid rgba(255,255,255,0.05); }
+    .pricing-card { background: #141417; border: 2px solid #2563eb; padding: 36px; border-radius: 20px; max-width: 420px; margin: 0 auto; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15); }
+    .pricing-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #2563eb; color: #fff; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 4px 14px; border-radius: 12px; }
+    .price { font-size: 42px; font-weight: 800; color: #fff; margin: 20px 0 8px; }
+    .price span { font-size: 16px; color: #a1a1aa; font-weight: 400; }
+    .pricing-features { list-style: none; text-align: left; margin: 24px 0 32px; padding: 0; }
+    .pricing-features li { padding: 8px 0; color: #d4d4d8; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .pricing-features li::before { content: "✓"; color: #3b82f6; font-weight: bold; }
+
+    /* Footer */
+    footer { padding: 40px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: #71717a; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a href="#" class="logo">⚡ ProofPulse</a>
+      <div class="nav-buttons">
+        <a href="admin.html" class="btn-login">Área do Cliente</a>
+        <a href="#precos" class="btn-primary">Testar Grátis</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <span class="badge-hero">Aumente sua Conversão</span>
+      <h1>Aumente as vendas da sua loja com <span>Notificações de Prova Social</span></h1>
+      <p>Exiba avaliações reais e depoimentos de clientes em tempo real no seu site. Instalação simples em menos de 2 minutos.</p>
+      
+      <div class="hero-cta">
+        <a href="#precos" class="btn-primary btn-lg">Começar Agora</a>
+      </div>
+
+      <!-- Live Demo Widget Preview -->
+      <div class="demo-preview">
+        <div class="demo-user">
+          <div class="demo-avatar">MC</div>
+          <div>
+            <div class="demo-name">Mariana Costa <span class="demo-tag">Verificado</span></div>
+            <div style="font-size: 11px; color: #a1a1aa;">Comprou há 10 minutos</div>
+          </div>
+        </div>
+        <div class="demo-stars">★★★★★</div>
+        <p class="demo-text">"O produto chegou super rápido e a qualidade me surpreendeu demais! Com certeza voltarei a comprar."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Tudo o que você precisa para gerar confiança</h2>
+        <p>Aumente a taxa de conversão do seu e-commerce com ferramentas simples e poderosas.</p>
+      </div>
+
+      <div class="grid-features">
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3>Instalação em 2 minutos</h3>
+          <p>Basta copiar e colar um pequeno código HTML na sua loja. Funciona na Shopify, Nuvemshop, WooCommerce e sites próprios.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🛡️</span>
+          <h3>Moderação Total</h3>
+          <p>Você tem controle total sobre os depoimentos. Apenas os depoimentos aprovados por você aparecem na sua loja.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⭐</span>
+          <h3>Coleta Simplificada</h3>
+          <p>Fornecemos um formulário exclusivo e amigável para você enviar aos seus clientes e coletar novos depoimentos com fotos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="precos">
+    <div class="container">
+      <div class="section-title">
+        <h2>Plano Simples e Transparente</h2>
+        <p>Sem fidelidade. Cancele a qualquer momento.</p>
+      </div>
+
+      <div class="pricing-card">
+        <span class="pricing-badge">Mais Popular</span>
+        <h3>Plano Pro</h3>
+        <div class="price">R$ 49 <span>/mês</span></div>
+        <p style="color: #a1a1aa; font-size: 13px;">Tudo o que sua loja precisa para vender mais</p>
+
+        <ul class="pricing-features">
+          <li>Widget Flutuante Ilimitado</li>
+          <li>Mural Completo de Depoimentos</li>
+          <li>Formulário Personalizado de Coleta</li>
+          <li>Aprovações e Moderação no Painel</li>
+          <li>Suporte Prioritário no WhatsApp</li>
+        </ul>
+
+        <!-- Insira aqui o link do seu checkout (Mercado Pago, Hotmart, Stripe ou WhatsApp) -->
+        <a href="https://wa.me/SEUNUMERO" target="_blank" class="btn-primary btn-lg" style="display: block; width: 100%;">Assinar Agora</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 ProofPulse Tecnologia. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
