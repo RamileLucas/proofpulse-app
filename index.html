@@ -6,7 +6,7 @@
   <title>ProofPulse - Instant Social Proof & Review Automation for E-Commerce</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: #09090b; color: #f4f4f5; line-height: 1.6; }
+    body { background-color: #09090b; color: #f4f4f5; line-height: 1.6; overflow-x: hidden; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
     /* Header */
@@ -29,11 +29,13 @@
     .hero-cta { display: flex; justify-content: center; gap: 16px; margin-bottom: 40px; }
     .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 10px; }
 
-    /* Integrations / Platforms Logos */
-    .platforms { padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; background: rgba(255,255,255,0.01); }
-    .platforms p { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #71717a; font-weight: 700; margin-bottom: 20px; }
-    .platform-badges { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; }
-    .badge-item { background: #141417; border: 1px solid rgba(255,255,255,0.08); padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #d4d4d8; display: flex; align-items: center; gap: 8px; }
+    /* Platforms Logos Section */
+    .platforms { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; background: rgba(255,255,255,0.01); }
+    .platforms p { font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; color: #71717a; font-weight: 700; margin-bottom: 24px; }
+    .platform-badges { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .badge-item { background: #141417; border: 1px solid rgba(255,255,255,0.08); padding: 10px 20px; border-radius: 30px; font-size: 14px; font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s, background 0.2s; }
+    .badge-item:hover { border-color: rgba(255,255,255,0.2); background: #1a1a1e; }
+    .badge-item img { width: 18px; height: 18px; filter: brightness(0) invert(0.9); }
 
     /* Features */
     .features { padding: 80px 0; }
@@ -59,6 +61,47 @@
     .pricing-features li::before { content: "✓"; color: #3b82f6; font-weight: bold; font-size: 16px; }
 
     footer { padding: 40px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: #71717a; font-size: 13px; }
+
+    /* Estilo do Popup Demonstrativo Ao Vivo */
+    #live-demo-popup {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      transform: translateY(120px);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      max-width: 340px;
+    }
+    #live-demo-popup.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .popup-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #2563eb;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .popup-content { font-size: 13px; color: #e4e4e7; line-height: 1.3; }
+    .popup-content strong { color: #ffffff; font-weight: 600; }
+    .popup-time { font-size: 11px; color: #a1a1aa; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+    .popup-verified { color: #3b82f6; font-size: 10px; font-weight: 700; text-transform: uppercase; }
   </style>
 </head>
 <body>
@@ -85,17 +128,29 @@
     </div>
   </section>
 
-  <!-- Supported Platforms Bar -->
+  <!-- Seção de Logos Vetoriais Oficiais -->
   <section class="platforms">
     <div class="container">
       <p>Works seamlessly with your entire tech stack</p>
       <div class="platform-badges">
-        <div class="badge-item">🛍️ Shopify</div>
-        <div class="badge-item">⚙️ WooCommerce</div>
-        <div class="badge-item">🌐 BigCommerce</div>
-        <div class="badge-item">🎨 Wix</div>
-        <div class="badge-item">📐 Squarespace</div>
-        <div class="badge-item">⚡ Custom HTML & Webflow</div>
+        <div class="badge-item">
+          <img src="https://cdn.simpleicons.org/shopify/white" alt="Shopify"> Shopify
+        </div>
+        <div class="badge-item">
+          <img src="https://cdn.simpleicons.org/woocommerce/white" alt="WooCommerce"> WooCommerce
+        </div>
+        <div class="badge-item">
+          <img src="https://cdn.simpleicons.org/bigcommerce/white" alt="BigCommerce"> BigCommerce
+        </div>
+        <div class="badge-item">
+          <img src="https://cdn.simpleicons.org/wix/white" alt="Wix"> Wix
+        </div>
+        <div class="badge-item">
+          <img src="https://cdn.simpleicons.org/squarespace/white" alt="Squarespace"> Squarespace
+        </div>
+        <div class="badge-item">
+          <img src="https://cdn.simpleicons.org/webflow/white" alt="Webflow"> Custom HTML & Webflow
+        </div>
       </div>
     </div>
   </section>
@@ -164,7 +219,6 @@
           <li>Priority 24/7 Email Support</li>
         </ul>
 
-        <!-- LINK DO STRIPE VEM AQUI -->
         <a href="YOUR_STRIPE_CHECKOUT_URL" class="btn-primary btn-lg" style="display: block; width: 100%;">Get Started Now</a>
       </div>
     </div>
@@ -176,7 +230,50 @@
     </div>
   </footer>
 
-  <!-- SCRIPT DO WIDGET VIVO RODANDO NA LANDING PAGE -->
-  <script src="widget.js" data-store="proofpulse-demo"></script>
+  <!-- HTML do Popup demonstrativo -->
+  <div id="live-demo-popup">
+    <div class="popup-avatar" id="demo-avatar">SJ</div>
+    <div class="popup-content">
+      <div id="demo-text"><strong>Sarah Jenkins</strong> from New York purchased <strong>Leather Tote Bag</strong></div>
+      <div class="popup-time"><span id="demo-time">2 minutes ago</span> • <span class="popup-verified">✓ Verified Purchase</span></div>
+    </div>
+  </div>
+
+  <!-- Script que faz os Popups aparecerem em rotação -->
+  <script>
+    const mockEvents = [
+      { initial: "SJ", name: "Sarah J.", location: "New York, NY", action: "just installed ProofPulse on her Shopify store!", time: "2 minutes ago" },
+      { initial: "MK", name: "Michael K.", location: "Austin, TX", action: "left a ⭐⭐⭐⭐⭐ review: 'Conversion increased by 18%!'", time: "5 minutes ago" },
+      { initial: "DL", name: "David L.", location: "California, US", action: "subscribed to ProofPulse Pro Plan", time: "12 minutes ago" },
+      { initial: "EB", name: "Emma B.", location: "London, UK", action: "approved 14 new customer reviews", time: "18 minutes ago" }
+    ];
+
+    let currentIndex = 0;
+    const popup = document.getElementById('live-demo-popup');
+    const avatar = document.getElementById('demo-avatar');
+    const text = document.getElementById('demo-text');
+    const time = document.getElementById('demo-time');
+
+    function showNextPopup() {
+      const item = mockEvents[currentIndex];
+      avatar.innerText = item.initial;
+      text.innerHTML = `<strong>${item.name}</strong> from ${item.location} ${item.action}`;
+      time.innerText = item.time;
+
+      popup.classList.add('show');
+
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 4500);
+
+      currentIndex = (currentIndex + 1) % mockEvents.length;
+    }
+
+    // Inicia 2 segundos após carregar a página e repete a cada 7 segundos
+    setTimeout(() => {
+      showNextPopup();
+      setInterval(showNextPopup, 7000);
+    }, 2000);
+  </script>
 </body>
 </html>
