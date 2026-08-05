@@ -12,7 +12,9 @@
     /* Header */
     header { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(9, 9, 11, 0.85); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
     .nav { display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 20px; font-weight: 800; color: #ffffff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .logo { font-size: 20px; font-weight: 800; color: #ffffff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, #2563eb, #60a5fa); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 16px; height: 16px; fill: #ffffff; }
     .logo span { color: #3b82f6; }
     .nav-buttons { display: flex; gap: 12px; }
     .btn-login { color: #a1a1aa; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: color 0.2s; }
@@ -22,20 +24,21 @@
 
     /* Hero */
     .hero { padding: 90px 0 50px; text-align: center; }
-    .badge-hero { display: inline-block; padding: 6px 14px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; color: #60a5fa; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+    .badge-hero { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; color: #60a5fa; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+    .badge-hero svg { width: 14px; height: 14px; fill: #60a5fa; }
     .hero h1 { font-size: 48px; font-weight: 800; color: #ffffff; line-height: 1.15; max-width: 820px; margin: 0 auto 20px; }
     .hero h1 span { background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { font-size: 18px; color: #a1a1aa; max-width: 640px; margin: 0 auto 32px; }
     .hero-cta { display: flex; justify-content: center; gap: 16px; margin-bottom: 40px; }
     .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 10px; }
 
-    /* Platforms Logos Section */
+    /* Platforms Logos Section with Official Brand Colors */
     .platforms { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; background: rgba(255,255,255,0.01); }
     .platforms p { font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; color: #71717a; font-weight: 700; margin-bottom: 24px; }
-    .platform-badges { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .badge-item { background: #141417; border: 1px solid rgba(255,255,255,0.08); padding: 10px 20px; border-radius: 30px; font-size: 14px; font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s, background 0.2s; }
-    .badge-item:hover { border-color: rgba(255,255,255,0.2); background: #1a1a1e; }
-    .badge-item img { width: 18px; height: 18px; filter: brightness(0) invert(0.9); }
+    .platform-badges { display: flex; justify-content: center; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .badge-item { background: #141417; border: 1px solid rgba(255,255,255,0.08); padding: 10px 22px; border-radius: 30px; font-size: 14px; font-weight: 600; color: #f4f4f5; display: flex; align-items: center; gap: 12px; transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+    .badge-item:hover { border-color: rgba(255,255,255,0.2); background: #1a1a1e; transform: translateY(-2px); }
+    .badge-item img { width: 20px; height: 20px; object-fit: contain; }
 
     /* Features */
     .features { padding: 80px 0; }
@@ -43,8 +46,10 @@
     .section-title h2 { font-size: 32px; color: #fff; font-weight: 800; margin-bottom: 10px; }
     .section-title p { color: #a1a1aa; font-size: 16px; }
     .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .feature-card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); padding: 28px; border-radius: 16px; }
-    .feature-icon { font-size: 28px; margin-bottom: 16px; display: inline-block; }
+    .feature-card { background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); padding: 28px; border-radius: 16px; transition: border-color 0.2s; }
+    .feature-card:hover { border-color: rgba(59, 130, 246, 0.4); }
+    .feature-icon-box { width: 44px; height: 44px; background: rgba(37, 99, 235, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid rgba(37, 99, 235, 0.2); }
+    .feature-icon-box svg { width: 22px; height: 22px; stroke: #3b82f6; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     .feature-card h3 { font-size: 18px; color: #fff; margin-bottom: 8px; }
     .feature-card p { font-size: 14px; color: #a1a1aa; }
 
@@ -62,7 +67,7 @@
 
     footer { padding: 40px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: #71717a; font-size: 13px; }
 
-    /* Estilo do Popup Demonstrativo Ao Vivo */
+    /* Estilo do Popup Demonstrativo Ao Vivo com Foto Real */
     #live-demo-popup {
       position: fixed;
       bottom: 24px;
@@ -70,35 +75,35 @@
       background: #18181b;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
-      padding: 14px 18px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 14px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
       z-index: 9999;
       transform: translateY(120px);
       opacity: 0;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-      max-width: 340px;
+      max-width: 350px;
     }
     #live-demo-popup.show {
       transform: translateY(0);
       opacity: 1;
     }
-    .popup-avatar {
-      width: 42px;
-      height: 42px;
+    .popup-avatar-container {
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      background: #2563eb;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 15px;
+      overflow: hidden;
       flex-shrink: 0;
+      border: 2px solid #2563eb;
     }
-    .popup-content { font-size: 13px; color: #e4e4e7; line-height: 1.3; }
+    .popup-avatar-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .popup-content { font-size: 13px; color: #e4e4e7; line-height: 1.35; }
     .popup-content strong { color: #ffffff; font-weight: 600; }
     .popup-time { font-size: 11px; color: #a1a1aa; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
     .popup-verified { color: #3b82f6; font-size: 10px; font-weight: 700; text-transform: uppercase; }
@@ -108,7 +113,12 @@
 
   <header>
     <div class="container nav">
-      <a href="#" class="logo">⚡ Proof<span>Pulse</span></a>
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        Proof<span>Pulse</span>
+      </a>
       <div class="nav-buttons">
         <a href="admin.html" class="btn-login">Store Dashboard</a>
         <a href="#pricing" class="btn-primary">Get Started</a>
@@ -118,7 +128,10 @@
 
   <section class="hero">
     <div class="container">
-      <span class="badge-hero">E-Commerce Conversion Booster</span>
+      <div class="badge-hero">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        E-Commerce Conversion Booster
+      </div>
       <h1>Turn Store Hesitation into Immediate Sales with <span>Social Proof</span></h1>
       <p>Show live customer purchases and star reviews in real time. Increase checkout conversion rates by up to 20% in under 2 minutes.</p>
       
@@ -128,33 +141,34 @@
     </div>
   </section>
 
-  <!-- Seção de Logos Vetoriais Oficiais -->
+  <!-- Seção de Logos com Cores Oficiais das Marcas -->
   <section class="platforms">
     <div class="container">
       <p>Works seamlessly with your entire tech stack</p>
       <div class="platform-badges">
         <div class="badge-item">
-          <img src="https://cdn.simpleicons.org/shopify/white" alt="Shopify"> Shopify
+          <img src="https://cdn.simpleicons.org/shopify/95BF47" alt="Shopify"> Shopify
         </div>
         <div class="badge-item">
-          <img src="https://cdn.simpleicons.org/woocommerce/white" alt="WooCommerce"> WooCommerce
+          <img src="https://cdn.simpleicons.org/woocommerce/96588A" alt="WooCommerce"> WooCommerce
         </div>
         <div class="badge-item">
-          <img src="https://cdn.simpleicons.org/bigcommerce/white" alt="BigCommerce"> BigCommerce
+          <img src="https://cdn.simpleicons.org/bigcommerce/0D52FF" alt="BigCommerce"> BigCommerce
         </div>
         <div class="badge-item">
-          <img src="https://cdn.simpleicons.org/wix/white" alt="Wix"> Wix
+          <img src="https://cdn.simpleicons.org/wix/FAAD14" alt="Wix"> Wix
         </div>
         <div class="badge-item">
-          <img src="https://cdn.simpleicons.org/squarespace/white" alt="Squarespace"> Squarespace
+          <img src="https://cdn.simpleicons.org/squarespace/FFFFFF" alt="Squarespace"> Squarespace
         </div>
         <div class="badge-item">
-          <img src="https://cdn.simpleicons.org/webflow/white" alt="Webflow"> Custom HTML & Webflow
+          <img src="https://cdn.simpleicons.org/webflow/146EF5" alt="Webflow"> Custom HTML & Webflow
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Funcionalidades com Ícones Vetoriais Profissionais -->
   <section class="features">
     <div class="container">
       <div class="section-title">
@@ -164,32 +178,49 @@
 
       <div class="grid-features">
         <div class="feature-card">
-          <span class="feature-icon">⚡</span>
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
           <h3>2-Minute One-Line Setup</h3>
           <p>Copy and paste a single snippet into your store template. No developer required.</p>
         </div>
+
         <div class="feature-card">
-          <span class="feature-icon">🛡️</span>
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
           <h3>Real-time Moderation Dashboard</h3>
           <p>Full control over your public reviews. Approve, edit, or highlight top testimonials instantly.</p>
         </div>
+
         <div class="feature-card">
-          <span class="feature-icon">⭐</span>
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
           <h3>Automated Review Collector</h3>
           <p>Give buyers a dedicated page to submit star ratings and photos directly from their phone.</p>
         </div>
+
         <div class="feature-card">
-          <span class="feature-icon">📱</span>
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          </div>
           <h3>100% Mobile Optimized</h3>
           <p>Designed to fit discreetly on smartphone screens without blocking cart buttons or checkout flows.</p>
         </div>
+
         <div class="feature-card">
-          <span class="feature-icon">🔒</span>
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
           <h3>Bank-Level Security & Speed</h3>
-          <p>Ultra-lightweight script (< 5kb) that loads asynchronously without slowing down your store.</p>
+          <p>Ultra-lightweight script (&lt; 5kb) that loads asynchronously without slowing down your store.</p>
         </div>
+
         <div class="feature-card">
-          <span class="feature-icon">📈</span>
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+          </div>
           <h3>Instant Sales Attribution</h3>
           <p>Track how popups drive engagement and boost buyer confidence during active sessions.</p>
         </div>
@@ -230,33 +261,59 @@
     </div>
   </footer>
 
-  <!-- HTML do Popup demonstrativo -->
+  <!-- Elemento do Popup Vivo com Avatar de Foto Real -->
   <div id="live-demo-popup">
-    <div class="popup-avatar" id="demo-avatar">SJ</div>
+    <div class="popup-avatar-container">
+      <img id="demo-avatar-img" src="" alt="User Avatar">
+    </div>
     <div class="popup-content">
-      <div id="demo-text"><strong>Sarah Jenkins</strong> from New York purchased <strong>Leather Tote Bag</strong></div>
-      <div class="popup-time"><span id="demo-time">2 minutes ago</span> • <span class="popup-verified">✓ Verified Purchase</span></div>
+      <div id="demo-text"></div>
+      <div class="popup-time"><span id="demo-time"></span> • <span class="popup-verified">✓ Verified Store</span></div>
     </div>
   </div>
 
-  <!-- Script que faz os Popups aparecerem em rotação -->
+  <!-- Rotação Automática de Popups com Avatares Reais -->
   <script>
     const mockEvents = [
-      { initial: "SJ", name: "Sarah J.", location: "New York, NY", action: "just installed ProofPulse on her Shopify store!", time: "2 minutes ago" },
-      { initial: "MK", name: "Michael K.", location: "Austin, TX", action: "left a ⭐⭐⭐⭐⭐ review: 'Conversion increased by 18%!'", time: "5 minutes ago" },
-      { initial: "DL", name: "David L.", location: "California, US", action: "subscribed to ProofPulse Pro Plan", time: "12 minutes ago" },
-      { initial: "EB", name: "Emma B.", location: "London, UK", action: "approved 14 new customer reviews", time: "18 minutes ago" }
+      { 
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80", 
+        name: "Sarah Jenkins", 
+        location: "New York, NY", 
+        action: "just installed ProofPulse on her Shopify store!", 
+        time: "2 minutes ago" 
+      },
+      { 
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80", 
+        name: "Michael Kraus", 
+        location: "Austin, TX", 
+        action: "left a ⭐⭐⭐⭐⭐ review: 'Checkout conversion increased by 18%!'", 
+        time: "5 minutes ago" 
+      },
+      { 
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80", 
+        name: "David Lopez", 
+        location: "California, US", 
+        action: "subscribed to ProofPulse Pro Plan", 
+        time: "12 minutes ago" 
+      },
+      { 
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80", 
+        name: "Emma Bennett", 
+        location: "London, UK", 
+        action: "approved 14 new customer reviews in real-time", 
+        time: "18 minutes ago" 
+      }
     ];
 
     let currentIndex = 0;
     const popup = document.getElementById('live-demo-popup');
-    const avatar = document.getElementById('demo-avatar');
+    const avatarImg = document.getElementById('demo-avatar-img');
     const text = document.getElementById('demo-text');
     const time = document.getElementById('demo-time');
 
     function showNextPopup() {
       const item = mockEvents[currentIndex];
-      avatar.innerText = item.initial;
+      avatarImg.src = item.avatar;
       text.innerHTML = `<strong>${item.name}</strong> from ${item.location} ${item.action}`;
       time.innerText = item.time;
 
@@ -269,7 +326,6 @@
       currentIndex = (currentIndex + 1) % mockEvents.length;
     }
 
-    // Inicia 2 segundos após carregar a página e repete a cada 7 segundos
     setTimeout(() => {
       showNextPopup();
       setInterval(showNextPopup, 7000);
